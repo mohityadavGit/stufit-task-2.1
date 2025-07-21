@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SignupDto, LoginDto, VerifyOtpDto, SignupHodDto, SignupStudentDto } from './dto';
 import { MailerService } from '../mailer/mailer.service';
+import { calculateAge } from '../common/utils/date-phase.util';
 
 @Injectable()
 export class AuthService {
@@ -66,8 +67,10 @@ export class AuthService {
   }
 
   // Student Signup
-  async signupStudent(dto: SignupStudentDto) {
-    const exists = await this.prisma.student.findFirst({ where: { email: dto.email } });
+ async signupStudent(dto: SignupStudentDto) {
+    const exists = await this.prisma.student.findFirst({
+      where: { email: dto.email },
+    });
     if (exists) throw new BadRequestException('Student already exists');
 
     if (!dto.school_id) {
@@ -76,7 +79,7 @@ export class AuthService {
 
     const hash = await bcrypt.hash(dto.password, 10);
 
-    return this.prisma.student.create({
+    const student = await this.prisma.student.create({
       data: {
         username: dto.username,
         email: dto.email,
@@ -84,9 +87,23 @@ export class AuthService {
         full_name: dto.full_name,
         adhar_number: dto.adhar_number,
         school_id: dto.school_id,
+        session: dto.session,
+        grade: dto.grade,
+        gender: dto.gender,
+        admission_date: dto.admission_date ? new Date(dto.admission_date) : undefined,
+        dob: dto.dob ? new Date(dto.dob) : undefined,
       },
     });
+
+    // 🧠 Add age in response
+    const age = student.dob ? calculateAge(student.dob) : null;
+
+    return {
+      ...student,
+      age,
+    };
   }
+
 
   //Login with proper checks and debugging logs
   async login(dto: LoginDto) {
@@ -146,34 +163,8 @@ export class AuthService {
 
 
 
-  /////////////////////////// TESTING KE LIE YE CHALAO///////////////////////// 
- 
-  ////////////////////////////////////////////
 
-  // OTP Verification
-//   async verifyOtp(dto: VerifyOtpDto) {
-//     const record = this.otpStore.get(dto.email);
 
-//     if (!record || Date.now() > record.expires) {
-//       throw new BadRequestException('OTP expired or not found');
-//     }
-
-//     const match = await bcrypt.compare(dto.otp, record.otp);
-//     if (!match) throw new BadRequestException('Invalid OTP');
-
-//     const payload = {
-//       sub: record.id,
-//       email: dto.email,
-//       role: record.role,
-//       type: record.type,
-//     };
-
-//     const token = this.jwt.sign(payload);
-//     return {
-//       access_token: token,
-//       role: record.role,
-//     };
-//   }
 
 
 async verifyOtp(dto: VerifyOtpDto) {
@@ -207,12 +198,20 @@ async verifyOtp(dto: VerifyOtpDto) {
         full_name: true,
         adhar_number: true,
         school_id: true,
+        session: true,
+        grade: true,
+        gender: true,
+        admission_date: true,
+        dob: true,
       },
     });
 
     if (!student) throw new BadRequestException('Student not found');
 
-    profileData = student;
+    profileData = {
+      ...student,
+      age: student.dob ? calculateAge(student.dob) : null,
+    };
   } else if (record.type === 'admin') {
     const admin = await this.prisma.adminLogin.findUnique({
       where: { admin_id: record.id },
@@ -247,5 +246,6 @@ async verifyOtp(dto: VerifyOtpDto) {
     profile: profileData,
   };
 }
+
 
 }

@@ -21,18 +21,24 @@ model School {
 }
 
 model Student {
-  student_id    String  @id @default(uuid()) @db.Uuid
-  username      String  @unique
-  email         String  @unique
-  password_hash String
-  full_name     String
-  adhar_number  String
-  school_id     Int
-  is_active     Boolean @default(true)
+  student_id     String  @id @default(uuid()) @db.Uuid
+  username       String  @unique
+  email          String  @unique
+  password_hash  String
+  full_name      String
+  adhar_number   String
+  school_id      Int
+  is_active      Boolean @default(true)
+  session        String?
+  grade          String?
+  gender         String?
+  admission_date DateTime?
+  dob            DateTime? 
 
-  school  School                @relation("SchoolStudents", fields: [school_id], references: [school_id])
-  defects StudentHealthDefect[] @relation("StudentDefects")
+  school         School                @relation("SchoolStudents", fields: [school_id], references: [school_id])
+  defects        StudentHealthDefect[] @relation("StudentDefects")
 }
+
 
 model StudentHealthDefect {
   defect_id          Int      @id @default(autoincrement())
