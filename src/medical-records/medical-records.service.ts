@@ -1,14 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "src/prisma/prisma.service";
 import { queryDto } from "./dto/filter-records.dto";
+import { Request } from 'express'; // Import Request from express
+import * as cookieParser from 'cookie-parser';
+
 
 @Injectable()
 export class MedicalRecordsService {
         constructor(private prisma: PrismaService) { }
 
-    async getFilteredRecords(query: queryDto, detailed=false) {
+    async getFilteredRecords(query: queryDto, detailed=false,req?:Request) {
         //create an empty array for query
         const where: any ={};
+
+        /*Extracting school name from anywhere */
+        /*If you want to extract it from Local Storage */
+        const schoolNameFromStorage = typeof window !== 'undefined' 
+        ? localStorage.getItem('schoolName') 
+        : null;
+
+        /*If you want to extract it from cookies */
+        
+        const schoolName = query.schoolName || schoolNameFromStorage || req?.cookies?.schoolName;
+
 
         //date range filter
         if (query.startDate && query.endDate) {
@@ -19,7 +33,7 @@ export class MedicalRecordsService {
         }
 
         //school filter
-        if(query.schoolName){
+        if(schoolName){
             //getting student from studenthealthdefect table
             where.student ={
                 //look for school relation in students table
