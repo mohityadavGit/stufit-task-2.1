@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { StudentsModule } from './students/students.module';
-import { MedicalRecordsModule } from './medical-records/medical-records.module';
+import { MedicalRecordsModule } from './hod-filter-medical-records/hod_filter_medical-records.module';
 import { MailerModule } from './mailer/mailer.module';
 import { RbacModule } from './rbac/rbac.module';
 import { PrismaModule } from './prisma/prisma.module';

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MedicalRecordsService } from './medical-records.service';
+import { MedicalRecordsService } from './hod_filter_medical-records.service';
 
 describe('MedicalRecordsService', () => {
   let service: MedicalRecordsService;
