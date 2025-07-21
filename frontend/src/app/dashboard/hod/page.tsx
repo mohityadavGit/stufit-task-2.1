@@ -36,7 +36,8 @@ function HodDashboard() {
 
   useEffect(() => {
     api
-      .get("/hod-filter-medical-records")
+      // .get("/hod-filter-medical-records")
+      .get('/students/all')
       .then((response) => {
         setStudents(response.data);
       })
