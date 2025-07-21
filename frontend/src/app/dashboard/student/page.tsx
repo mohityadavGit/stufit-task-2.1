@@ -12,6 +12,12 @@ interface StudentInfo {
   adhar_number: string;
   school_id: number;
   role: string;
+  session?: string;
+  grade?: string;
+  gender?: string;
+  admission_date?: string;
+  dob?: string;
+  age?: number;
 }
 
 export default function StudentDashboard() {
@@ -54,11 +60,55 @@ export default function StudentDashboard() {
     );
   }
 
+  const infoGroups = [
+    {
+      title: "👤 Basic Info",
+      color: "#E6F0FF",
+      fields: [
+        { label: "Full Name", value: student.full_name },
+        { label: "Username", value: student.username },
+        { label: "Email", value: student.email },
+        { label: "Role", value: student.role },
+      ],
+    },
+    {
+      title: "🏫 Academic Info",
+      color: "#DDF7E3",
+      fields: [
+        { label: "Student ID", value: student.student_id },
+        { label: "School ID", value: student.school_id },
+        { label: "Session", value: student.session || "-" },
+        { label: "Grade", value: student.grade || "-" },
+      ],
+    },
+    {
+      title: "📅 Personal Info",
+      color: "#FFF3CD",
+      fields: [
+        { label: "Adhar Number", value: student.adhar_number },
+        { label: "Gender", value: student.gender || "-" },
+        {
+          label: "Admission Date",
+          value: student.admission_date
+            ? new Date(student.admission_date).toLocaleDateString()
+            : "-",
+        },
+        {
+          label: "Date of Birth",
+          value: student.dob
+            ? new Date(student.dob).toLocaleDateString()
+            : "-",
+        },
+        { label: "Age", value: student.age !== undefined ? student.age : "-" },
+      ],
+    },
+  ];
+
   return (
     <>
       <Header />
       <main className="min-h-screen bg-[#F5F9FF] flex flex-col items-center py-12 px-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6 border border-[#A3C6FF]">
+        <div className="max-w-3xl w-full bg-white rounded-2xl shadow-xl p-6 border border-[#A3C6FF]">
           <div className="flex flex-col items-center mb-8">
             <Image
               src="/images/circlelogo.png"
@@ -75,26 +125,29 @@ export default function StudentDashboard() {
             </p>
           </div>
 
-          <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[#044974] font-medium text-sm">
-            {[
-              { label: "Student ID", value: student.student_id },
-              { label: "Username", value: student.username },
-              { label: "Email", value: student.email },
-              { label: "Adhar Number", value: student.adhar_number },
-              { label: "Role", value: student.role },
-              { label: "School ID", value: student.school_id },
-            ].map(({ label, value }) => (
-              <div
-                key={label}
-                className="bg-[#E6F0FF] rounded-lg p-3 shadow-sm border border-[#A3C6FF] hover:shadow-md transition-shadow duration-200"
+          {infoGroups.map((group, index) => (
+            <div key={index} className="mb-6">
+              <h2 className="text-md text-[#044974] font-semibold mb-2">
+                {group.title}
+              </h2>
+              <section
+                className={`grid grid-cols-1 sm:grid-cols-2 gap-4 text-[#044974] text-sm`}
               >
-                <span className="block text-xs text-[#2A66C1] mb-1 font-semibold">
-                  {label}
-                </span>
-                <p className="break-words">{value}</p>
-              </div>
-            ))}
-          </section>
+                {group.fields.map(({ label, value }) => (
+                  <div
+                    key={label}
+                    className={`rounded-lg p-3 shadow-sm border border-[#A3C6FF] hover:shadow-md transition-shadow duration-200`}
+                    style={{ backgroundColor: group.color }}
+                  >
+                    <span className="block text-xs text-[#2A66C1] mb-1 font-semibold">
+                      {label}
+                    </span>
+                    <p className="break-words">{value}</p>
+                  </div>
+                ))}
+              </section>
+            </div>
+          ))}
 
           <footer className="mt-8 text-center text-[#5A82D3] font-semibold tracking-wide text-sm">
             Stay active. Stay healthy. Stay focused! 💪
