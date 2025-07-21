@@ -86,7 +86,7 @@ export default function Home() {
               {/* HOD Login Button */}
               <button
                 onClick={() => router.push("/hod-signup")}
-                className="w-full h-[48px] sm:h-[50px] bg-[#044974] hover:bg-[#03375a] transition rounded-[10px] font-inter font-extrabold text-base sm:text-lg text-white shadow flex items-center justify-center gap-3"
+                className="hover:cursor-pointer w-full h-[48px] sm:h-[50px] bg-[#044974] hover:bg-[#03375a] transition rounded-[10px] font-inter font-extrabold text-base sm:text-lg text-white shadow flex items-center justify-center gap-3"
               >
                 <svg
                   width="20"
@@ -110,7 +110,7 @@ export default function Home() {
               {/* Student Login Button */}
               <button
                 onClick={() => router.push("/student-signup")}
-                className="w-full h-[48px] sm:h-[50px] bg-white hover:bg-gray-50 transition rounded-[10px] font-inter font-extrabold text-base sm:text-lg text-[#044974] shadow border-2 border-[#044974] flex items-center justify-center gap-3"
+                className="hover:cursor-pointer w-full h-[48px] sm:h-[50px] bg-white hover:bg-gray-200 transition rounded-[10px] font-inter font-extrabold text-base sm:text-lg text-[#044974] shadow border-2 border-[#044974] flex items-center justify-center gap-3"
               >
                 <svg
                   width="20"
@@ -141,7 +141,7 @@ export default function Home() {
               {/* Sign In Button */}
               <button
                 onClick={() => router.push("/login")}
-                className="w-full h-[48px] sm:h-[50px] bg-gradient-to-r from-[#72BBE0] to-[#5aa3cc] hover:from-[#5aa3cc] hover:to-[#4a8db3] transition rounded-[10px] font-inter font-extrabold text-base sm:text-lg text-white shadow flex items-center justify-center gap-3"
+                className="hover:cursor-pointer w-full h-[48px] sm:h-[50px] bg-gradient-to-r from-[#72BBE0] to-[#5aa3cc] hover:from-[#5aa3cc] hover:to-[#4a8db3] transition rounded-[10px] font-inter font-extrabold text-base sm:text-lg text-white shadow flex items-center justify-center gap-3"
               >
                 Sign In
               </button>
