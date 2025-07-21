@@ -1,4 +1,22 @@
-import { Ability } from '@casl/ability';
+// src/rbac/types.ts
+import type { Student, StudentHealthDefect, School } from '@prisma/client';
+import { PureAbility } from '@casl/ability';
 
-export type Subjects = 'Student' | 'MedicalRecord' | 'OwnMedicalRecord' | 'all';
-export type AppAbility = Ability<[string, Subjects]>;
+export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';
+
+export type Subjects =
+  | Student
+  | StudentHealthDefect
+  | School
+  | 'Student'
+  | 'StudentHealthDefect'
+  | 'School'
+  | 'all';
+
+export type AppAbility = PureAbility<[Actions, Subjects]>;
+
+export type AppUser = {
+  role: 'SUPER_ADMIN' | 'ADMIN' | 'HOD' | 'STUDENT';
+  id?: string;
+  school_id?: number;
+};
