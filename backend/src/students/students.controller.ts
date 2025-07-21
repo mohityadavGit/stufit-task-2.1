@@ -1,4 +1,15 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Body, UseGuards } from '@nestjs/common';
+import { StudentsService } from './students.service';
+import { StudentDetailsDto } from './dto/student-details.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('students')
-export class StudentsController {}
+export class StudentsController {
+  constructor(private readonly studentsService: StudentsService) {}
+
+  @Get('details')
+  getStudentDetails(@Body() dto: StudentDetailsDto) {
+    return this.studentsService.getStudentDetails(dto);
+  }
+}

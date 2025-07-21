@@ -20,6 +20,7 @@ type Subjects =
   | 'Student'
   | 'StudentHealthDefect'
   | 'School'
+  | 'Parent'
   | 'all';
 
 // Step 3: AppAbility type banayi ja rahi hai - har permission ek pair hota hai [action, subject]
@@ -29,7 +30,7 @@ export type AppAbility = PureAbility<[Actions, Subjects]>;
 @Injectable()
 export class CaslAbilityFactory {
   createForUser(user: {
-    role: 'SUPER_ADMIN' | 'ADMIN' | 'HOD' | 'STUDENT'; // Role identify karega access
+    role: 'SUPER_ADMIN' | 'ADMIN' | 'HOD' | 'PARENT' | 'STUDENT'; // Role identify karega access
     id?: string;             // Student ka ID (agar student hai)
     school_id?: number;      // School ID (agar HOD ya Admin hai)
   }): AppAbility {
