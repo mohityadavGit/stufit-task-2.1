@@ -101,6 +101,7 @@ export const authUtils = {
       case 'super-admin':
         return '/dashboard/super-admin';
       case 'student':
+        return '/dashboard/student';
       case 'parent':
         return '/dashboard/parent';
       default:

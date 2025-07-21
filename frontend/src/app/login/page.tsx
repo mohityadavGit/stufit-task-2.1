@@ -20,65 +20,63 @@ export default function LoginPage() {
   }, []);
 
   const handleLogin = async () => {
-  console.log("Login button clicked");
-  console.log("Email entered:", email);
-  console.log("Password entered:", password ? "****" : "(empty)");
+    console.log("Login button clicked");
+    console.log("Email entered:", email);
+    console.log("Password entered:", password ? "****" : "(empty)");
 
-  if (!email || !password) {
-    setError("Please enter both email and password");
-    console.log("Validation failed: email or password missing");
-    return;
-  }
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      console.log("Validation failed: email or password missing");
+      return;
+    }
 
-  if (loading) {
-    console.log("Login already in progress, ignoring duplicate click");
-    return;
-  }
+    if (loading) {
+      console.log("Login already in progress, ignoring duplicate click");
+      return;
+    }
 
-  setLoading(true);
-  setError("");
-  setSuccess("");
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-  try {
-    console.log("Sending login request to backend...");
-    const response = await axios.post("http://localhost:5000/auth/login", {
-      email,
-      password,
-    });
-    console.log("Response received:", response);
+    try {
+      console.log("Sending login request to backend...");
+      const response = await axios.post("http://localhost:5000/auth/login", {
+        email,
+        password,
+      });
+      console.log("Response received:", response);
 
-    if (response.status === 200 || response.status === 201) {
-  setError("");
-  setSuccess("OTP sent to your email! Redirecting...");
+      if (response.status === 200 || response.status === 201) {
+        setError("");
+        setSuccess("OTP sent to your email! Redirecting...");
 
-  localStorage.setItem("temp_email", email);
+        localStorage.setItem("temp_email", email);
 
-  setTimeout(() => {
-    router.push("/otp");
-  }, 1500);
-}
-
-  } catch (err: unknown) {
-    console.error("Login error caught:", err);
-    if (err && typeof err === "object" && "response" in err) {
-      const axiosError = err as { response?: { status?: number } };
-      if (axiosError.response?.status === 400) {
-        setError("Invalid email or password");
-        console.log("Error: Invalid email or password");
+        setTimeout(() => {
+          router.push("/otp");
+        }, 1500);
+      }
+    } catch (err: unknown) {
+      console.error("Login error caught:", err);
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosError = err as { response?: { status?: number } };
+        if (axiosError.response?.status === 400) {
+          setError("Invalid email or password");
+          console.log("Error: Invalid email or password");
+        } else {
+          setError("Something went wrong. Please try again.");
+          console.log("Error: Something went wrong on server");
+        }
       } else {
         setError("Something went wrong. Please try again.");
-        console.log("Error: Something went wrong on server");
+        console.log("Error: Unknown error");
       }
-    } else {
-      setError("Something went wrong. Please try again.");
-      console.log("Error: Unknown error");
+    } finally {
+      setLoading(false);
+      console.log("Login process ended, loading set to false");
     }
-  } finally {
-    setLoading(false);
-    console.log("Login process ended, loading set to false");
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen flex bg-[#F9F9F9]">
@@ -174,7 +172,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full h-[52px] sm:h-[56px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
+                  className="text-gray-950 w-full h-[52px] sm:h-[56px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
                   placeholder=" "
                 />
                 <label
@@ -193,7 +191,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full h-[52px] sm:h-[56px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
+                  className="text-gray-950 w-full h-[52px] sm:h-[56px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
                   placeholder=" "
                 />
                 <label
@@ -228,7 +226,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full h-[52px] sm:h-[56px] mt-2 bg-[#044974] hover:bg-[#03375a] disabled:bg-gray-400 disabled:cursor-not-allowed transition rounded-[10px] font-inter font-extrabold text-lg sm:text-xl text-white shadow"
+                className="w-full hover:cursor-pointer h-[52px] sm:h-[56px] mt-2 bg-[#044974] hover:bg-[#03375a] disabled:bg-gray-400 disabled:cursor-not-allowed transition rounded-[10px] font-inter font-extrabold text-lg sm:text-xl text-white shadow"
               >
                 {loading ? "SIGNING IN..." : "SIGN IN"}
               </button>
@@ -236,7 +234,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="w-full text-[#044974] font-inter font-medium text-base hover:underline transition mt-4"
+                className="w-full hover:cursor-pointer text-[#044974] font-inter font-medium text-base hover:underline transition mt-4"
               >
                 Back to Home
               </button>

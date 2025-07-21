@@ -22,64 +22,63 @@ export default function HODSignupPage() {
   };
 
   const handleSubmit = async () => {
-  if (loading) return;
+    if (loading) return;
 
-  setLoading(true);
-  setError("");
-  setSuccess("");
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-  try {
-   const response = await axios.post(
-  "http://localhost:5000/auth/signup/admin",
-  {
-    username: formData.username,
-    email: formData.email,
-    password: formData.password,
-    full_name: formData.full_name,
-    school_id: Number(formData.school_id), 
-    role: "HOD",
-  }
-);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/auth/signup/admin",
+        {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          full_name: formData.full_name,
+          school_id: Number(formData.school_id),
+          role: "HOD",
+        }
+      );
 
-    if (response.status === 201) {
-      setError("");
-      setSuccess("HOD account created successfully! Redirecting to login...");
-      localStorage.setItem("temp_email", formData.email);
-const signupHodInfo = {
-  admin_id: response.data.admin_id,
-  username: response.data.username,
-  email: response.data.email,
-  full_name: response.data.full_name,
-  role: response.data.role,
-  school_id: response.data.school_id,
-};
+      if (response.status === 201) {
+        setError("");
+        setSuccess("HOD account created successfully! Redirecting to login...");
+        localStorage.setItem("temp_email", formData.email);
+        const signupHodInfo = {
+          admin_id: response.data.admin_id,
+          username: response.data.username,
+          email: response.data.email,
+          full_name: response.data.full_name,
+          role: response.data.role,
+          school_id: response.data.school_id,
+        };
 
-localStorage.setItem("signupHodInfo", JSON.stringify(signupHodInfo));
+        localStorage.setItem("signupHodInfo", JSON.stringify(signupHodInfo));
 
-setTimeout(() => {
-  router.push("/login");
-}, 2000);
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
 
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
-    }
-  } catch (err: unknown) {
-    if (err && typeof err === "object" && "response" in err) {
-      const axiosError = err as { response?: { status?: number } };
-      if (axiosError.response?.status === 409) {
-        setError("HOD already exists with this email or username");
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
+      }
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosError = err as { response?: { status?: number } };
+        if (axiosError.response?.status === 409) {
+          setError("HOD already exists with this email or username");
+        } else {
+          setError("Something went wrong. Please try again.");
+        }
       } else {
         setError("Something went wrong. Please try again.");
       }
-    } else {
-      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen flex bg-[#F9F9F9]">
@@ -175,7 +174,7 @@ setTimeout(() => {
                   onChange={(e) =>
                     handleInputChange("username", e.target.value)
                   }
-                  className="w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
+                  className="text-gray-950 w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
                   placeholder=" "
                 />
                 <label
@@ -192,7 +191,7 @@ setTimeout(() => {
                   id="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className="w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
+                  className="text-gray-950 w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
                   placeholder=" "
                 />
                 <label
@@ -211,7 +210,7 @@ setTimeout(() => {
                   onChange={(e) =>
                     handleInputChange("password", e.target.value)
                   }
-                  className="w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
+                  className="text-gray-950 w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
                   placeholder=" "
                 />
                 <label
@@ -230,7 +229,7 @@ setTimeout(() => {
                   onChange={(e) =>
                     handleInputChange("full_name", e.target.value)
                   }
-                  className="w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
+                  className="text-gray-950 w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
                   placeholder=" "
                 />
                 <label
@@ -249,7 +248,7 @@ setTimeout(() => {
                   onChange={(e) =>
                     handleInputChange("school_id", e.target.value)
                   }
-                  className="w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
+                  className="text-gray-950 w-full h-[48px] sm:h-[50px] rounded-[10px] border border-gray-400 bg-white px-4 text-base font-inter focus:outline-none focus:ring-2 focus:ring-[#044974] peer"
                   placeholder=" "
                 />
                 <label
@@ -265,7 +264,7 @@ setTimeout(() => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full h-[48px] sm:h-[50px] mt-2 bg-[#044974] hover:bg-[#03375a] disabled:bg-gray-400 transition rounded-[10px] font-inter font-extrabold text-lg sm:text-xl text-white shadow"
+                className="hover:cursor-pointer w-full h-[48px] sm:h-[50px] mt-2 bg-[#044974] hover:bg-[#03375a] disabled:bg-gray-400 transition rounded-[10px] font-inter font-extrabold text-lg sm:text-xl text-white shadow"
               >
                 {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
               </button>
@@ -273,7 +272,7 @@ setTimeout(() => {
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="w-full text-[#044974] font-inter font-medium text-base hover:underline transition"
+                className="hover:cursor-pointer w-full text-[#044974] font-inter font-medium text-base hover:underline transition"
               >
                 Back to Home
               </button>
