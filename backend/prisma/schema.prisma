@@ -39,7 +39,6 @@ model Student {
   defects        StudentHealthDefect[] @relation("StudentDefects")
 }
 
-
 model StudentHealthDefect {
   defect_id          Int      @id @default(autoincrement())
   student_id         String   @db.Uuid
