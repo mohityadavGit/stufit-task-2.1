@@ -66,12 +66,14 @@ export class AuthService {
     });
   }
 
-  // Student Signup
- async signupStudent(dto: SignupStudentDto) {
-    const exists = await this.prisma.student.findFirst({
-      where: { email: dto.email },
-    });
-    if (exists) throw new BadRequestException('Student already exists');
+  // Student
+  async signupStudent(dto: SignupStudentDto) {
+    const emailExists = await this.prisma.student.findFirst({ where: { email: dto.email } });
+    if (emailExists) throw new BadRequestException('Student with email already exists');
+
+    const usernameExists = await this.prisma.student.findFirst({ where: { username: dto.username } });
+    if (usernameExists) throw new BadRequestException('Student with username already exists');
+
 
     if (!dto.school_id) {
       throw new BadRequestException('school_id is mandatory for Student');

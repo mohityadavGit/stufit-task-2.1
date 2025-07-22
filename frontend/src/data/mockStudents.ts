@@ -66,7 +66,7 @@ export const mockStudents: Student[] = [
   },
   {
     id: 5,
-    name: 'Ravi Kumar',
+    name: 'Ravi',
     grade: '5',
     age: 10,
     gender: 'Male',

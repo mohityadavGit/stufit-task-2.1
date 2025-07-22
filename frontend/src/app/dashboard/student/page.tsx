@@ -1,159 +1,180 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Header from "@/components/Header";
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import {
+  Bell,
+  LogOut,
+  User,
+  Calendar,
+  School,
+  Cake,
+  HeartPulse,
+  ClipboardList,
+  CheckCircle,
+  AlertTriangle,
+} from 'lucide-react';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
-interface StudentInfo {
-  student_id: string;
+interface DefectDetail {
+  [key: string]: string;
+}
+
+interface Defect {
+  defect_type: string;
+  affected_body_part: string;
+  defect_details: DefectDetail;
+  severity: string;
+  date_identified: string;
+}
+
+interface StudentAPIResponse {
   username: string;
   email: string;
   full_name: string;
   adhar_number: string;
-  school_id: number;
-  role: string;
-  session?: string;
-  grade?: string;
-  gender?: string;
-  admission_date?: string;
-  dob?: string;
-  age?: number;
+  defects: Defect[];
+  school: {
+    school_name: string;
+  };
 }
 
-export default function StudentDashboard() {
-  const [student, setStudent] = useState<StudentInfo | null>(null);
+function StudentPage() {
+  const [student, setStudent] = useState<StudentAPIResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const data = localStorage.getItem("user_data");
-    if (data) {
-      try {
-        const parsed = JSON.parse(data);
-        if (parsed.role === "STUDENT") {
-          setStudent(parsed);
-        }
-      } catch (e) {
-        console.error("Error parsing student data:", e);
-      }
-    }
-    setLoading(false);
+    fetch('http://localhost:5000/students/details')
+      .then((res) => res.json())
+      .then((data: StudentAPIResponse) => {
+        setStudent(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching student data:', err);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex justify-center items-center bg-[#F5F9FF]">
-        <p className="text-[#044974] text-md font-semibold animate-pulse">
-          Loading student data...
-        </p>
-      </div>
-    );
+    return <div className="text-center mt-10 text-blue-600">Loading...</div>;
   }
 
   if (!student) {
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center bg-[#F5F9FF] px-4">
-        <Header />
-        <p className="text-[#044974] text-lg font-semibold mt-6">
-          No student data found. Please login or contact support.
-        </p>
+      <div className="text-center text-red-600 mt-10">
+        Student not found. Please check login credentials.
       </div>
     );
   }
 
-  const infoGroups = [
-    {
-      title: "👤 Basic Info",
-      color: "#E6F0FF",
-      fields: [
-        { label: "Full Name", value: student.full_name },
-        { label: "Username", value: student.username },
-        { label: "Email", value: student.email },
-        { label: "Role", value: student.role },
-      ],
-    },
-    {
-      title: "🏫 Academic Info",
-      color: "#DDF7E3",
-      fields: [
-        { label: "Student ID", value: student.student_id },
-        { label: "School ID", value: student.school_id },
-        { label: "Session", value: student.session || "-" },
-        { label: "Grade", value: student.grade || "-" },
-      ],
-    },
-    {
-      title: "📅 Personal Info",
-      color: "#FFF3CD",
-      fields: [
-        { label: "Adhar Number", value: student.adhar_number },
-        { label: "Gender", value: student.gender || "-" },
-        {
-          label: "Admission Date",
-          value: student.admission_date
-            ? new Date(student.admission_date).toLocaleDateString()
-            : "-",
-        },
-        {
-          label: "Date of Birth",
-          value: student.dob
-            ? new Date(student.dob).toLocaleDateString()
-            : "-",
-        },
-        { label: "Age", value: student.age !== undefined ? student.age : "-" },
-      ],
-    },
-  ];
-
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-[#F5F9FF] flex flex-col items-center py-12 px-4">
-        <div className="max-w-3xl w-full bg-white rounded-2xl shadow-xl p-6 border border-[#A3C6FF]">
-          <div className="flex flex-col items-center mb-8">
-            <Image
-              src="/images/circlelogo.png"
-              alt="STUFIT Logo"
-              width={80}
-              height={80}
-              className="mb-4"
-            />
-            <h1 className="text-2xl font-semibold text-[#044974] text-center select-none">
-              🎓 Welcome, {student.full_name}
-            </h1>
-            <p className="text-[#3182CE] mt-1 font-medium text-center max-w-xs text-sm">
-              Empowering your wellness journey with clarity and ease.
-            </p>
+    <div className="min-h-screen bg-gradient-to-b from-[#f0f9ff] to-[#dbeafe]">
+      {/* Header */}
+      <header className="bg-[#3b82f6] text-white flex items-center justify-between px-4 md:px-8 py-4 rounded-b-3xl shadow-lg">
+        <div className="flex items-center space-x-4">
+          <Image src="/circleLogo.png" alt="Stufit Logo" width={50} height={50} />
+          <h1 className="text-lg md:text-xl font-semibold tracking-wide">Stufit</h1>
+        </div>
+        <div className="flex items-center space-x-4">
+          <Bell className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform duration-200" />
+          <LogOut className="w-6 h-6 cursor-pointer hover:rotate-12 transition-transform duration-200" />
+        </div>
+      </header>
+
+      {/* Welcome */}
+      <section className="text-center py-6">
+        <h2 className="text-3xl font-bold text-blue-900">👋 Welcome, {student.full_name}</h2>
+        <p className="text-blue-700">Here is your health screening summary</p>
+      </section>
+
+      {/* Report Card */}
+      <section className="max-w-4xl mx-auto bg-white rounded-3xl p-6 shadow-lg border border-slate-200 mb-8">
+        <div className="flex items-center gap-2 mb-6">
+          <ClipboardList className="text-blue-700" />
+          <h3 className="text-2xl font-semibold text-blue-800">Health Report Card</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-900 text-base">
+          <p className="flex items-center gap-2">
+            <User className="w-5 h-5 text-blue-500" />
+            <span className="font-semibold">Name:</span> {student.full_name}
+          </p>
+          <p className="flex items-center gap-2">
+            <School className="w-5 h-5 text-blue-500" />
+            <span className="font-semibold">School:</span> {student.school.school_name}
+          </p>
+          <p className="flex items-center gap-2">
+            <User className="w-5 h-5 text-blue-500" />
+            <span className="font-semibold">Aadhar No.:</span> {student.adhar_number}
+          </p>
+          <p className="flex items-center gap-2 md:col-span-2">
+            <User className="w-5 h-5 text-blue-500" />
+            <span className="font-semibold">Email:</span> {student.email}
+          </p>
+        </div>
+
+        <hr className="my-6 border-slate-200" />
+
+        {/* Health Issues */}
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <HeartPulse className="text-pink-600" />
+            <h4 className="text-xl font-semibold text-blue-800">Detected Health Issues</h4>
           </div>
 
-          {infoGroups.map((group, index) => (
-            <div key={index} className="mb-6">
-              <h2 className="text-md text-[#044974] font-semibold mb-2">
-                {group.title}
-              </h2>
-              <section
-                className={`grid grid-cols-1 sm:grid-cols-2 gap-4 text-[#044974] text-sm`}
-              >
-                {group.fields.map(({ label, value }) => (
-                  <div
-                    key={label}
-                    className={`rounded-lg p-3 shadow-sm border border-[#A3C6FF] hover:shadow-md transition-shadow duration-200`}
-                    style={{ backgroundColor: group.color }}
-                  >
-                    <span className="block text-xs text-[#2A66C1] mb-1 font-semibold">
-                      {label}
-                    </span>
-                    <p className="break-words">{value}</p>
+          {student.defects.length === 0 ? (
+            <p className="flex items-center text-green-600 font-medium mt-2">
+              <CheckCircle className="w-5 h-5 mr-2" />
+              No health issues found. You are in good health!
+            </p>
+          ) : (
+            <ul className="list-none space-y-4 mt-4">
+              {student.defects.map((defect, index) => (
+                <li
+                  key={index}
+                  className="p-4 bg-blue-50 rounded-xl border border-blue-200 hover:bg-blue-100 transition"
+                >
+                  <div className="flex items-center gap-2 mb-2 text-blue-800 font-medium">
+                    <AlertTriangle className="text-red-500" />
+                    {defect.defect_type} – {defect.affected_body_part}
                   </div>
-                ))}
-              </section>
-            </div>
-          ))}
-
-          <footer className="mt-8 text-center text-[#5A82D3] font-semibold tracking-wide text-sm">
-            Stay active. Stay healthy. Stay focused! 💪
-          </footer>
+                  <div className="text-sm text-slate-700 ml-7">
+                    <p className="mb-1">
+                      <strong>Severity:</strong> {defect.severity}
+                    </p>
+                    <p className="mb-1">
+                      <strong>Date Identified:</strong>{" "}
+                      {new Date(defect.date_identified).toLocaleDateString()}
+                    </p>
+                    <p className="mb-1 font-semibold">Details:</p>
+                    <ul className="list-disc list-inside ml-4">
+                      {Object.entries(defect.defect_details).map(([key, value]) => (
+                        <li key={key}>
+                          <span className="capitalize">{key}:</span> {value}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-      </main>
-    </>
+      </section>
+
+      {/* Footer */}
+      <footer className="text-center pb-6 text-slate-500 text-sm">
+        🩺 Generated by Stufit Health Screening System
+      </footer>
+    </div>
+  );
+}
+
+export default function ProtectedStudentPage() {
+  return (
+    <ProtectedRoute allowedRoles={["student"]}>
+      <StudentPage />
+    </ProtectedRoute>
   );
 }
