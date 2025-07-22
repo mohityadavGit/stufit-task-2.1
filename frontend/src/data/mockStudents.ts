@@ -6,6 +6,7 @@ export type Student = {
   gender: 'Male' | 'Female' | 'Other';
   school: string;
   session: string;
+  admission_date?: string;
   date: string; // ISO format: YYYY-MM-DD
   defects: {
     eye?: { subType: 'myopia' | 'hypermetropia' | 'astigmatism' };
@@ -66,7 +67,7 @@ export const mockStudents: Student[] = [
   },
   {
     id: 5,
-    name: 'Ravi Kumar',
+    name: 'Ravi',
     grade: '5',
     age: 10,
     gender: 'Male',

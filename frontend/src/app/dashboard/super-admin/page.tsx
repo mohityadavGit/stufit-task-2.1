@@ -1,34 +1,53 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { mockStudents, Student } from "@/data/mockStudents";
-import FilterPanel from "@/components/FilterPanel";
-import HealthDrilldownChart from "@/components/HealthDrilldownChart";
-import HealthSummaryBarChart from "@/components/HealthSummaryChart";
-import Header from "@/components/Header"; // Add this
-import ProtectedRoute from "@/components/ProtectedRoute";
+import React, { useEffect, useState } from 'react';
+import { Student } from '@/data/mockStudents';
+import FilterPanel from '@/components/FilterPanel';
+import HealthDrilldownChart from '@/components/HealthDrilldownChart';
+import HealthSummaryBarChart from '@/components/HealthSummaryChart';
+import Header from '@/components/Header';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import axios from 'axios';
 
 const defaultFilters = {
-  school: "All",
-  grade: "All",
-  session: "All",
-  defect: "eye",
+  school: 'All',
+  grade: 'All',
+  session: 'All',
+  defect: 'eye',
 };
 
 function SuperAdminDashboard() {
   const [filters, setFilters] = useState(defaultFilters);
-  const [filteredData, setFilteredData] = useState<Student[]>(mockStudents);
+  const [allStudents, setAllStudents] = useState<Student[]>([]);
+  const [filteredData, setFilteredData] = useState<Student[]>([]);
+
+  useEffect(() => {
+    // Replace mock data with API fetch
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get<Student[]>(
+          'http://localhost:5000/api/students'
+        );
+        setAllStudents(response.data);
+        setFilteredData(response.data);
+      } catch (error) {
+        console.error('Failed to fetch students:', error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
 
   const applyFilters = () => {
-    const result = mockStudents.filter((student) => {
+    const result = allStudents.filter((student) => {
       const matchSchool =
-        filters.school === "All" || student.school === filters.school;
+        filters.school === 'All' || student.school === filters.school;
       const matchGrade =
-        filters.grade === "All" || student.grade === filters.grade;
+        filters.grade === 'All' || student.grade === filters.grade;
       const matchSession =
-        filters.session === "All" || student.session === filters.session;
+        filters.session === 'All' || student.session === filters.session;
       const matchDefect =
-        filters.defect === "All" ||
+        filters.defect === 'All' ||
         (student.defects &&
           student.defects[filters.defect as keyof typeof student.defects]);
       return matchSchool && matchGrade && matchSession && matchDefect;
@@ -39,24 +58,24 @@ function SuperAdminDashboard() {
 
   const resetFilters = () => {
     setFilters(defaultFilters);
-    setFilteredData(mockStudents);
+    setFilteredData(allStudents);
   };
 
   const uniqueValues = {
-    schools: [...new Set(mockStudents.map((s) => s.school))],
-    grades: [...new Set(mockStudents.map((s) => s.grade))],
-    sessions: [...new Set(mockStudents.map((s) => s.session))],
+    schools: [...new Set(allStudents.map((s) => s.school))],
+    grades: [...new Set(allStudents.map((s) => s.grade))],
+    sessions: [...new Set(allStudents.map((s) => s.session))],
   };
 
   const handleBarClick = (selectedDefect: string) => {
     setFilters((prev) => ({ ...prev, defect: selectedDefect }));
-    const updatedData = mockStudents.filter((student) => {
+    const updatedData = allStudents.filter((student) => {
       const matchSchool =
-        filters.school === "All" || student.school === filters.school;
+        filters.school === 'All' || student.school === filters.school;
       const matchGrade =
-        filters.grade === "All" || student.grade === filters.grade;
+        filters.grade === 'All' || student.grade === filters.grade;
       const matchSession =
-        filters.session === "All" || student.session === filters.session;
+        filters.session === 'All' || student.session === filters.session;
       const matchDefect =
         student.defects &&
         student.defects[selectedDefect as keyof typeof student.defects];
@@ -67,17 +86,14 @@ function SuperAdminDashboard() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Header at the top */}
       <Header />
 
-      {/* Title */}
       <section className="text-center py-6">
         <h2 className="text-3xl font-bold text-red-900">Super Admin Dashboard</h2>
         <p className="text-blue-700">Cumulative Dashboard for all schools</p>
       </section>
 
       <main className="flex flex-col p-4 md:p-6 gap-6">
-        {/* Filters in horizontal row */}
         <div className="bg-white rounded-xl p-4 shadow-md border border-gray-300">
           <FilterPanel
             filters={filters}
@@ -88,15 +104,11 @@ function SuperAdminDashboard() {
           />
         </div>
 
-        {/* Charts side by side on large screens */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <HealthSummaryBarChart
-            data={filteredData}
-            onBarClick={handleBarClick}
-          />
+          <HealthSummaryBarChart data={filteredData} onBarClick={handleBarClick} />
           <HealthDrilldownChart
             data={filteredData}
-            defectType={filters.defect as keyof Student["defects"]}
+            defectType={filters.defect as keyof Student['defects']}
           />
         </div>
       </main>
@@ -104,10 +116,9 @@ function SuperAdminDashboard() {
   );
 }
 
-// Wrap with ProtectedRoute for role-based access
 export default function ProtectedSuperAdminDashboard() {
   return (
-    <ProtectedRoute allowedRoles={["admin", "super-admin"]}>
+    <ProtectedRoute allowedRoles={['admin', 'super-admin']}>
       <SuperAdminDashboard />
     </ProtectedRoute>
   );
