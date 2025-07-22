@@ -26,6 +26,11 @@ export const apiService = {
     const response = await api.get('/api/student/records');
     return response.data;
   },
+  getStudentDetails: async (studentId: string) => {
+  const response = await api.post('/students/details', { studentId });
+  return response.data;
+},
+
 
   // HOD-specific routes
   getSchoolStats: async () => {

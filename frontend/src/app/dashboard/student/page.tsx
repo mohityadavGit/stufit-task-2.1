@@ -43,18 +43,37 @@ function StudentPage() {
   const [student, setStudent] = useState<StudentAPIResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch('http://localhost:5000/students/details')
-      .then((res) => res.json())
-      .then((data: StudentAPIResponse) => {
-        setStudent(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Error fetching student data:', err);
-        setLoading(false);
-      });
-  }, []);
+ useEffect(() => {
+  const studentData = JSON.parse(localStorage.getItem('user_data') || '{}');
+
+  if (!studentData?.student_id) {
+    console.error('No student ID found in local storage');
+    setLoading(false);
+    return;
+  }
+
+  fetch('http://localhost:5000/students/details', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    },
+    body: JSON.stringify({ studentId: studentData.student_id }),
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error('Unauthorized');
+      return res.json();
+    })
+    .then((data: StudentAPIResponse) => {
+      setStudent(data);
+    })
+    .catch((err) => {
+      console.error('Error fetching student data:', err);
+    })
+    .finally(() => setLoading(false));
+}, []);
+
+
 
   if (loading) {
     return <div className="text-center mt-10 text-blue-600">Loading...</div>;

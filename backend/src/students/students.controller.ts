@@ -1,4 +1,4 @@
-import { Controller, Get, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { StudentDetailsDto } from './dto/student-details.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -8,7 +8,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
-  @Get('details')
+  @Post('details') // ✅ Changed from @Get to @Post
   getStudentDetails(@Body() dto: StudentDetailsDto) {
     return this.studentsService.getStudentDetails(dto);
   }

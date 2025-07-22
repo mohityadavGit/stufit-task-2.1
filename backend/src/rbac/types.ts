@@ -11,6 +11,7 @@ export type Subjects =
   | 'Student'
   | 'StudentHealthDefect'
   | 'School'
+  | 'Parent'      
   | 'all';
 
 export type AppAbility = PureAbility<[Actions, Subjects]>;

@@ -49,7 +49,7 @@ model StudentHealthDefect {
   severity           String   @default("Unknown")
   date_identified    DateTime @default(now())
   doctor_remarks     String?
-  session            String?
+  
 
   student Student @relation("StudentDefects", fields: [student_id], references: [student_id], onDelete: Cascade)
 }
