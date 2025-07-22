@@ -6,6 +6,7 @@ export type Student = {
   gender: 'Male' | 'Female' | 'Other';
   school: string;
   session: string;
+  admission_date?: string;
   date: string; // ISO format: YYYY-MM-DD
   defects: {
     eye?: { subType: 'myopia' | 'hypermetropia' | 'astigmatism' };

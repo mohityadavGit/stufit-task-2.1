@@ -8,7 +8,7 @@ import HealthSummaryBarChart from "@/components/HealthSummaryChart";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { authUtils } from "@/lib/auth";
 import { useRouter } from "next/navigation";
-import { Student } from "@/data/types";
+import { Student } from "@/data/mockStudents"
 
 const DEFECT_TYPES = [
   "eye",

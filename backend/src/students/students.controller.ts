@@ -8,7 +8,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
-  @Post('details') // ✅ Changed from @Get to @Post
+  @Post('details') 
   getStudentDetails(@Body() dto: StudentDetailsDto) {
     return this.studentsService.getStudentDetails(dto);
   }
