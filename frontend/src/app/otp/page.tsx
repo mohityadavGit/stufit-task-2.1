@@ -58,7 +58,7 @@ function OtpPageContent() {
         return;
       }
 
-      const response = await axios.post("http://localhost:5000/auth/verify-otp", {
+      const response = await axios.post("/api/auth/verify-otp", {
         email,
         otp,
       });

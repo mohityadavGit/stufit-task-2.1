@@ -18,3 +18,11 @@ export type Student = {
     ent?: { subType: 'sinusitis' | 'tonsillitis' };
   };
 };
+
+// Extended Student type for parent data with family relationships
+export type StudentWithParent = Student & {
+  fathers_name: string;
+  mothers_name?: string;
+  parent_contact?: string;
+  parent_email?: string;
+};

@@ -30,7 +30,7 @@ function HodDashboard() {
   const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/hod-filter-medical-records", {
+    fetch("/api/medical-records", {
       credentials: "include",
     })
       .then((res) => res.json())

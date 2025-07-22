@@ -31,7 +31,7 @@ export default function StudentSignupPage() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/signup/student",
+        "/api/auth/signup/student",
         {
           username: formData.username,
           email: formData.email,

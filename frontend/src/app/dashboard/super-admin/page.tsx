@@ -26,7 +26,7 @@ function SuperAdminDashboard() {
     const fetchStudents = async () => {
       try {
         const response = await axios.get<Student[]>(
-          'http://localhost:5000/api/students'
+          '/api/students'
         );
         setAllStudents(response.data);
         setFilteredData(response.data);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   Bell,
@@ -14,23 +14,67 @@ import {
   CheckCircle,
   AlertTriangle,
 } from "lucide-react";
-import { parentData } from "@/data/parentData";
-import { Student } from "@/data/mockStudents";
+import { StudentWithParent } from "@/data/types";
 import ProtectedRoute from "@/components/ProtectedRoute";
-
-const FATHER_NAME = "Parent1"; // Replace with dynamic login later
+import { authUtils } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 function ParentPage() {
+  const router = useRouter();
   const [selectedChild, setSelectedChild] = useState<string>("All");
+  const [myChildren, setMyChildren] = useState<StudentWithParent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fatherName, setFatherName] = useState<string>("");
 
-  const myChildren: Student[] = parentData.filter(
-    (s) => s.fathers_name === FATHER_NAME
-  );
+  useEffect(() => {
+    // In a real app, you would get the parent's information from the auth token
+    // For now, we'll use localStorage or a default value
+    const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+    const parentName = userData.name || "Parent1"; // fallback to Parent1 for demo
+    setFatherName(parentName);
+
+    // TODO: Replace with actual API call to get parent's children
+    // This would be something like: GET /api/parent/children
+    const fetchChildren = async () => {
+      try {
+        // Use the API route we created
+        const response = await fetch(`/api/parent/children?parentName=${encodeURIComponent(parentName)}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch children data');
+        }
+        const children = await response.json();
+        setMyChildren(children);
+      } catch (error) {
+        console.error('Error fetching children data:', error);
+        // Fallback to empty array on error
+        setMyChildren([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChildren();
+  }, []);
 
   const filteredData =
     selectedChild === "All"
       ? myChildren
       : myChildren.filter((child) => child.name === selectedChild);
+
+  const handleLogout = () => {
+    authUtils.clearAuth();
+    router.push("/login");
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f4faff] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-blue-900">Loading your children's data...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f4faff]">
@@ -42,7 +86,10 @@ function ParentPage() {
         </div>
         <div className="flex items-center gap-4">
           <Bell className="w-6 h-6 cursor-pointer hover:text-gray-200" />
-          <LogOut className="w-6 h-6 cursor-pointer hover:text-gray-200" />
+          <LogOut 
+            className="w-6 h-6 cursor-pointer hover:text-gray-200"
+            onClick={handleLogout}
+          />
         </div>
       </header>
 
@@ -50,7 +97,7 @@ function ParentPage() {
       <section className="text-center py-6">
         <h2 className="text-3xl font-bold text-blue-900">Parent Dashboard</h2>
         <p className="text-blue-700">
-          Viewing health reports for children of {FATHER_NAME}
+          Viewing health reports for children of {fatherName}
         </p>
       </section>
 

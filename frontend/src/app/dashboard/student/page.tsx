@@ -44,8 +44,27 @@ function StudentPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/students/details')
-      .then((res) => res.json())
+    // Get student ID from localStorage
+    const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+    
+    if (!userData?.student_id) {
+      console.error('No student ID found in user data');
+      setLoading(false);
+      return;
+    }
+
+    fetch('/api/students/details', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      },
+      body: JSON.stringify({ studentId: userData.student_id }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch student data');
+        return res.json();
+      })
       .then((data: StudentAPIResponse) => {
         setStudent(data);
         setLoading(false);

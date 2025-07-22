@@ -30,7 +30,7 @@ export default function HODSignupPage() {
 
   try {
    const response = await axios.post(
-  "http://localhost:5000/auth/signup/admin",
+  "/api/auth/signup/admin",
   {
     username: formData.username,
     email: formData.email,
