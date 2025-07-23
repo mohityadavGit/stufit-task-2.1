@@ -35,7 +35,7 @@ model Student {
   admission_date DateTime?
   dob            DateTime?
   parent_id      String?  @db.Uuid
-   
+
 
   school         School                @relation("SchoolStudents", fields: [school_id], references: [school_id])
   defects        StudentHealthDefect[] @relation("StudentDefects")
@@ -74,6 +74,7 @@ model Parent {
   parent_id     String    @id @default(uuid()) @db.Uuid
   full_name     String
   email         String    @unique
+  password_hash  String
   phone_number  String?
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
