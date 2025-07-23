@@ -33,10 +33,13 @@ model Student {
   grade          String?
   gender         String?
   admission_date DateTime?
-  dob            DateTime? 
+  dob            DateTime?
+  parent_id      String?  @db.Uuid
+   
 
   school         School                @relation("SchoolStudents", fields: [school_id], references: [school_id])
   defects        StudentHealthDefect[] @relation("StudentDefects")
+  parent         Parent?               @relation("ParentChildren", fields: [parent_id], references: [parent_id], onDelete: SetNull)
 }
 
 
@@ -50,8 +53,7 @@ model StudentHealthDefect {
   date_identified    DateTime @default(now())
   doctor_remarks     String?
   
-
-  student Student @relation("StudentDefects", fields: [student_id], references: [student_id], onDelete: Cascade)
+  student Student             @relation("StudentDefects", fields: [student_id], references: [student_id], onDelete: Cascade)
 }
 
 model AdminLogin {
@@ -65,4 +67,16 @@ model AdminLogin {
   school_id     Int?
 
   school School? @relation("SchoolAdmins", fields: [school_id], references: [school_id])
+}
+
+
+model Parent {
+  parent_id     String    @id @default(uuid()) @db.Uuid
+  full_name     String
+  email         String    @unique
+  phone_number  String?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  children      Student[] @relation("ParentChildren")
 }
