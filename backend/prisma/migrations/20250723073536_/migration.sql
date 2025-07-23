@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('SUPER_ADMIN', 'ADMIN', 'HOD');
+
 -- CreateTable
 CREATE TABLE "School" (
     "school_id" SERIAL NOT NULL,
@@ -16,6 +19,12 @@ CREATE TABLE "Student" (
     "adhar_number" TEXT NOT NULL,
     "school_id" INTEGER NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "session" TEXT,
+    "grade" TEXT,
+    "gender" TEXT,
+    "admission_date" TIMESTAMP(3),
+    "dob" TIMESTAMP(3),
+    "parent_id" UUID,
 
     CONSTRAINT "Student_pkey" PRIMARY KEY ("student_id")
 );
@@ -41,11 +50,23 @@ CREATE TABLE "AdminLogin" (
     "email" TEXT NOT NULL,
     "password_hash" TEXT NOT NULL,
     "full_name" TEXT,
-    "role" TEXT NOT NULL DEFAULT 'ADMIN',
+    "role" "Role" NOT NULL DEFAULT 'ADMIN',
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "school_id" INTEGER,
 
     CONSTRAINT "AdminLogin_pkey" PRIMARY KEY ("admin_id")
+);
+
+-- CreateTable
+CREATE TABLE "Parent" (
+    "parent_id" UUID NOT NULL,
+    "full_name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "phone_number" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Parent_pkey" PRIMARY KEY ("parent_id")
 );
 
 -- CreateIndex
@@ -60,8 +81,14 @@ CREATE UNIQUE INDEX "AdminLogin_username_key" ON "AdminLogin"("username");
 -- CreateIndex
 CREATE UNIQUE INDEX "AdminLogin_email_key" ON "AdminLogin"("email");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Parent_email_key" ON "Parent"("email");
+
 -- AddForeignKey
 ALTER TABLE "Student" ADD CONSTRAINT "Student_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "School"("school_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Student" ADD CONSTRAINT "Student_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "Parent"("parent_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "StudentHealthDefect" ADD CONSTRAINT "StudentHealthDefect_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "Student"("student_id") ON DELETE CASCADE ON UPDATE CASCADE;
