@@ -79,7 +79,7 @@ export class AuthService {
     });
   }
 
-  // Student
+  // Student signup
   async signupStudent(dto: SignupStudentDto) {
     const emailExists = await this.prisma.student.findFirst({
       where: { email: dto.email },

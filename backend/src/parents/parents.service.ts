@@ -1,10 +1,45 @@
-import { Injectable, Query } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, Query } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ParentDetailsDto } from './dto/parents.dto';
+import { addChildrenDto } from './dto/addChildren.dto';
+import { error } from 'console';
 
 @Injectable()
 export class ParentsService {
   constructor(private prisma: PrismaService) {}
+
+  async addChildrenDetails(@Query() dto:addChildrenDto){
+    const student = await this.prisma.student.findUnique({
+      where: { adhar_number: dto.childAdhaar },
+    });
+
+    if (!student) {
+      throw new NotFoundException('Student with provided Aadhaar not found');
+    }
+
+    // 2. Check if student already has a parent
+    if (student.parent_id) {
+      throw new ConflictException('Student already has a parent assigned');
+    }
+
+    // 3. Update the student's parent_id
+    const updatedStudent = await this.prisma.student.update({
+      where: { adhar_number: dto.childAdhaar },
+      data: {
+        parent_id: "123456789abccd",
+      },
+      include: {
+        parent: true, 
+        school: true,
+      },
+    });
+
+    if(!updatedStudent){
+        throw new BadRequestException("something went wrong while updating children");
+    }
+
+    return { message: 'Child details added successfully' };
+  };
 
   async getParentDetails(@Query() dto: ParentDetailsDto) {
     // Base query to get parent with children
