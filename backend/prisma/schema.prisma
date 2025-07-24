@@ -36,7 +36,6 @@ model Student {
   dob            DateTime?
   parent_id      String?  @db.Uuid
 
-
   school         School                @relation("SchoolStudents", fields: [school_id], references: [school_id])
   defects        StudentHealthDefect[] @relation("StudentDefects")
   parent         Parent?               @relation("ParentChildren", fields: [parent_id], references: [parent_id], onDelete: SetNull)
