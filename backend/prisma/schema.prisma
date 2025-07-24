@@ -26,7 +26,7 @@ model Student {
   email          String  @unique
   password_hash  String
   full_name      String
-  adhar_number String   @unique
+  adhar_number   String  @unique
   school_id      Int
   is_active      Boolean @default(true)
   session        String?
@@ -35,7 +35,6 @@ model Student {
   admission_date DateTime?
   dob            DateTime?
   parent_id      String?  @db.Uuid
-
 
   school         School                @relation("SchoolStudents", fields: [school_id], references: [school_id])
   defects        StudentHealthDefect[] @relation("StudentDefects")
