@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
 import { ParentsService } from './parents.service';
 import { ParentDetailsDto } from './dto/parents.dto';
 import { addChildrenDto } from './dto/addChildren.dto';
@@ -14,7 +14,7 @@ export class ParentsController {
     }
 
     @Patch('update')
-    addChildrenDetails(@Query() dto:addChildrenDto){
+    addChildrenDetails(@Body() dto:addChildrenDto){
         return this.parentsService.addChildrenDetails(dto);
     }
 }

@@ -26,7 +26,7 @@ model Student {
   email          String  @unique
   password_hash  String
   full_name      String
-  adhar_number   String
+  adhar_number   String  @unique
   school_id      Int
   is_active      Boolean @default(true)
   session        String?

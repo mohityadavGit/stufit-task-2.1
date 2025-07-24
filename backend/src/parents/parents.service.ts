@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, Query } from '@nestjs/common';
+import { BadRequestException, Body, ConflictException, Injectable, NotFoundException, Query } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ParentDetailsDto } from './dto/parents.dto';
 import { addChildrenDto } from './dto/addChildren.dto';
@@ -8,7 +8,7 @@ import { error } from 'console';
 export class ParentsService {
   constructor(private prisma: PrismaService) {}
 
-  async addChildrenDetails(@Query() dto:addChildrenDto){
+  async addChildrenDetails(@Body() dto:addChildrenDto){
     const student = await this.prisma.student.findUnique({
       where: { adhar_number: dto.childAdhaar },
     });
@@ -26,7 +26,7 @@ export class ParentsService {
     const updatedStudent = await this.prisma.student.update({
       where: { adhar_number: dto.childAdhaar },
       data: {
-        parent_id: "123456789abccd",
+        parent_id: "123456789abccd", //to be changed
       },
       include: {
         parent: true, 
