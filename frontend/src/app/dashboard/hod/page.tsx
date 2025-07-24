@@ -36,7 +36,8 @@ function HodDashboard() {
 
   useEffect(() => {
     api
-      .get("/hod-filter-medical-records")
+      // .get("/hod-filter-medical-records")
+      .get('/students/all')
       .then((response) => {
         setStudents(response.data);
       })
@@ -218,8 +219,8 @@ function HodDashboard() {
 
 export default function ProtectedHodDashboard() {
   return (
-    // <ProtectedRoute allowedRoles={["admin", "hod"]}>
+    <ProtectedRoute allowedRoles={["admin", "hod"]}>
     <HodDashboard />
-    // </ProtectedRoute>
+    </ProtectedRoute>
   );
 }

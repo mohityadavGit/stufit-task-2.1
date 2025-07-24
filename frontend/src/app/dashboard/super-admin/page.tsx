@@ -13,7 +13,7 @@ const defaultFilters = {
   school: 'All',
   grade: 'All',
   session: 'All',
-  defect: 'eye',
+  defect: 'All',
 };
 
 function SuperAdminDashboard() {
@@ -22,11 +22,10 @@ function SuperAdminDashboard() {
   const [filteredData, setFilteredData] = useState<Student[]>([]);
 
   useEffect(() => {
-    // Replace mock data with API fetch
     const fetchStudents = async () => {
       try {
         const response = await axios.get<Student[]>(
-          'http://localhost:5000/api/students'
+          'http://localhost:5000/students/all',
         );
         setAllStudents(response.data);
         setFilteredData(response.data);

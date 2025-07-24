@@ -9,6 +9,7 @@ import { MailerModule } from './mailer/mailer.module';
 import { RbacModule } from './rbac/rbac.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { ParentsModule } from './parents/parents.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ConfigModule } from '@nestjs/config';
     MailerModule,
     RbacModule,
     PrismaModule,
+    ParentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

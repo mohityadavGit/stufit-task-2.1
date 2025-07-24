@@ -42,5 +42,8 @@ export class SignupStudentDto {
 
   @IsOptional()
   @IsDateString()
-  dob?: string; 
+  dob?: string;
+
+  // @IsString()
+  // parent_number?: string;
 }

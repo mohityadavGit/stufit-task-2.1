@@ -1,15 +1,19 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Body, UseGuards, Query } from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { StudentDetailsDto } from './dto/student-details.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('students')
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
-  @Post('details') 
-  getStudentDetails(@Body() dto: StudentDetailsDto) {
+  @Get('details')
+  getStudentDetails(@Query() dto: StudentDetailsDto) {
     return this.studentsService.getStudentDetails(dto);
+  }
+
+  @Get('all')
+  async getAllStudents() {
+    return this.studentsService.getAllStudentsForSuperAdmin();
   }
 }
