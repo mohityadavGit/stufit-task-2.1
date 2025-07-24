@@ -44,6 +44,6 @@ export class SignupStudentDto {
   @IsDateString()
   dob?: string;
 
-  @IsString()
-  parent_number?: string;
+  // @IsString()
+  // parent_number?: string;
 }

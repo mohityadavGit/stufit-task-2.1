@@ -6,6 +6,7 @@ import {
   SignupStudentDto,
   LoginDto,
   VerifyOtpDto,
+  SignupParentDto,
 } from './dto';
 
 @Controller('auth')
@@ -27,7 +28,10 @@ export class AuthController {
   signupStudent(@Body() dto: SignupStudentDto) {
     return this.authService.signupStudent(dto);
   }
-
+@Post('signup/parent')
+  signupParent(@Body() dto: SignupParentDto) {
+    return this.authService.signupParent(dto);
+  }
   @Post('login')
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);

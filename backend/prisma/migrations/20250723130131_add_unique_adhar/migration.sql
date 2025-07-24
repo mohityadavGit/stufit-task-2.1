@@ -62,6 +62,7 @@ CREATE TABLE "Parent" (
     "parent_id" UUID NOT NULL,
     "full_name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "password_hash" TEXT,
     "phone_number" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -74,6 +75,9 @@ CREATE UNIQUE INDEX "Student_username_key" ON "Student"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Student_email_key" ON "Student"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Student_adhar_number_key" ON "Student"("adhar_number");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "AdminLogin_username_key" ON "AdminLogin"("username");

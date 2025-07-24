@@ -1,14 +1,20 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  Query,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ParentDetailsDto } from './dto/parents.dto';
 import { addChildrenDto } from './dto/addChildren.dto';
-import { error } from 'console';
 
 @Injectable()
 export class ParentsService {
   constructor(private prisma: PrismaService) {}
 
-  async addChildrenDetails(@Query() dto:addChildrenDto){
+  async addChildrenDetails(@Query() dto: addChildrenDto) {
+    // 1. Find student by Aadhaar number
     const student = await this.prisma.student.findUnique({
       where: { adhar_number: dto.childAdhaar },
     });
@@ -26,62 +32,57 @@ export class ParentsService {
     const updatedStudent = await this.prisma.student.update({
       where: { adhar_number: dto.childAdhaar },
       data: {
-        parent_id: "123456789abccd",
+        parent_id: "123456789abccd", // Replace with real parent_id from auth/session
       },
       include: {
-        parent: true, 
+        parent: true,
         school: true,
       },
     });
 
-    if(!updatedStudent){
-        throw new BadRequestException("something went wrong while updating children");
+    if (!updatedStudent) {
+      throw new BadRequestException('Something went wrong while updating child');
     }
 
     return { message: 'Child details added successfully' };
-  };
+  }
 
   async getParentDetails(@Query() dto: ParentDetailsDto) {
-    // Base query to get parent with children
-    const query = {
+    const parentWithChildren = await this.prisma.parent.findUnique({
       where: { parent_id: dto.parentId },
       include: {
         children: {
+          where: dto.childId ? { student_id: dto.childId } : undefined,
           include: {
             school: {
               select: {
-                school_name: true
-              }
+                school_name: true,
+              },
             },
             defects: {
               select: {
                 defect_type: true,
                 severity: true,
-                date_identified: true
-              }
-            }
+                date_identified: true,
+              },
+            },
           },
-          // Apply child filter if provided
-          ...(dto.childId && { where: { student_id: dto.childId } })
-        }
-      }
-    };
-
-    const parentWithChildren = await this.prisma.parent.findUnique(query);
+        },
+      },
+    });
 
     if (!parentWithChildren) {
-      throw new Error('Parent not found');
+      throw new NotFoundException('Parent not found');
     }
 
-    // Transform the data for frontend consumption
     return {
       parent: {
         id: parentWithChildren.parent_id,
         name: parentWithChildren.full_name,
         email: parentWithChildren.email,
-        phone: parentWithChildren.phone_number
+        phone: parentWithChildren.phone_number,
       },
-      children: parentWithChildren.children.map(child => ({
+      children: parentWithChildren.children.map((child) => ({
         id: child.student_id,
         name: child.full_name,
         username: child.username,
@@ -92,12 +93,12 @@ export class ParentsService {
         admissionDate: child.admission_date,
         dob: child.dob,
         isActive: child.is_active,
-        healthDefects: child.defects.map(defect => ({
+        healthDefects: child.defects.map((defect) => ({
           type: defect.defect_type,
           severity: defect.severity,
-          dateIdentified: defect.date_identified
-        }))
-      }))
+          dateIdentified: defect.date_identified,
+        })),
+      })),
     };
   }
 }
